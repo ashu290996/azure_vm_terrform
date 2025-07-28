@@ -166,13 +166,16 @@ resource "random_id" "random_id" {
 # }
 
 # Create virtual machine
-resource "azurerm_virtual_machine" "my_terraform_vm" {
+resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   name                  = "Jenkins"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.my_terraform_nic.id]
   size                  = "Standard_D2s_v3"
 
+  # security_type = "TrustedLaunch"
+  secure_boot_enabled = "true"
+  
   os_disk {
     name                 = "myOsDisk"
     caching              = "ReadWrite"
@@ -185,7 +188,7 @@ resource "azurerm_virtual_machine" "my_terraform_vm" {
   #   sku       = "22_04-lts"
   #   version   = "server"
   # }
-  source_image_id = "/subscriptions/12d08a43-87ab-49fc-b06f-d1d31622044a/resourceGroups/Devops_project/providers/Microsoft.Compute/galleries/azure_jenkins_image/images/custom_jenkins_image"
+  source_image_id = "/subscriptions/12d08a43-87ab-49fc-b06f-d1d31622044a/resourcegroups/Devops_project/providers/Microsoft.Compute/galleries/azure_compute_gallery/images/custom_jenkins_image1/versions/1.0.0"
   
   computer_name  = "hostname"
   admin_username = var.username
