@@ -80,20 +80,8 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
-    source_port_range          = "9000"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-    
-  }
-  security_rule {
-    name                       = "sonar_out"
-    priority                   = 1014
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "9000"
-    destination_port_range     = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9000"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
     
@@ -105,21 +93,8 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
-    source_port_range          = "8081"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-    
-  }
-
-  security_rule {
-    name                       = "nexus_out"
-    priority                   = 1016
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "8081"
-    destination_port_range     = "*"
+    source_port_range          = "*"
+    destination_port_range     = "8081"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
     
@@ -172,6 +147,9 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.my_terraform_nic.id]
   size                  = "Standard_D2s_v3"
+  admin_username      = "azureuser"
+  admin_password      = "Azure@123456"
+  disable_password_authentication = "false"
 
   # security_type = "TrustedLaunch"
   secure_boot_enabled = "true"
@@ -190,13 +168,13 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   # }
   source_image_id = "/subscriptions/12d08a43-87ab-49fc-b06f-d1d31622044a/resourcegroups/Devops_project/providers/Microsoft.Compute/galleries/azure_compute_gallery/images/custom_jenkins_image1/versions/1.0.0"
   
-  computer_name  = "hostname"
-  admin_username = var.username
+  computer_name  = "Jenkins"
+  #admin_username = var.username
 
-  admin_ssh_key {
-    username   = var.username
-    public_key = azapi_resource_action.ssh_public_key_gen.output.publicKey
-  }
+  # admin_ssh_key {
+  #   username   = var.username
+  #   public_key = azapi_resource_action.ssh_public_key_gen.output.publicKey
+  # }
 
   # boot_diagnostics {
   #   storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
@@ -204,24 +182,23 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   connection {
       type        = "ssh"
       host        = self.public_ip_address
-      user        = "azureadmin"
-      private_key = file("azureadmin.pem")
+      user        = "azureuser"
+      password = "Azure@123456"
     }
 
   
-  provisioner "file" {
-    source      = "jenkins1.sh"
-    destination = "/tmp/jenkins1.sh"
-  }
   # provisioner "file" {
-  #   source      = "docker.sh"
-  #   destination = "/tmp/docker.sh"
+  #   source      = "jenkins1.sh"
+  #   destination = "/tmp/jenkins1.sh"
   # }
+  # # provisioner "file" {
+  # #   source      = "docker.sh"
+  # #   destination = "/tmp/docker.sh"
+  # # }
 
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/jenkins1.sh",
-      "/tmp/jenkins1.sh",
-    ]
-  }
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "/bin/bash" ,"-c", "/home/azureuser/install.sh"
+  #   ]
+  # }
 }
