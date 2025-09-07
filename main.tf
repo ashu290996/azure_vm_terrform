@@ -4,7 +4,7 @@ resource "random_pet" "rg_name" {
 
 resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
-  name     = "Devops_project1"
+  name     = "Devops_project_dev"
 }
 
 # Create virtual network
@@ -25,7 +25,8 @@ resource "azurerm_subnet" "my_terraform_subnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "my_terraform_public_ip" {
-  name                = "myPublicIP"
+  count = length(var.computer_names)
+  name                = "myPublicIP-${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
@@ -94,7 +95,7 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = ["8081", "8082", "8083"]
+    destination_port_range     = "8081"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
     
@@ -103,7 +104,8 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "my_terraform_nic" {
-  name                = "myNIC"
+  count = length(var.computer_names)
+  name                = "myNIC-${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -111,13 +113,14 @@ resource "azurerm_network_interface" "my_terraform_nic" {
     name                          = "my_nic_configuration"
     subnet_id                     = azurerm_subnet.my_terraform_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.my_terraform_public_ip.id
+    public_ip_address_id          = azurerm_public_ip.my_terraform_public_ip[count.index].id
   }
 }
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.my_terraform_nic.id
+  count = length(var.computer_names)
+  network_interface_id      = azurerm_network_interface.my_terraform_nic[count.index].id
   network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
 }
 
@@ -142,20 +145,21 @@ resource "random_id" "random_id" {
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
-  name                  = "Jenkins"
+  count                 = length(var.computer_names)
+  name                  = var.computer_names[count.index]
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.my_terraform_nic.id]
-  size                  = "Standard_D2as_v4"
-  admin_username      = "azureuser"
-  admin_password      = "Azure@123456"
+  network_interface_ids = [azurerm_network_interface.my_terraform_nic[count.index].id]
+  size                  = var.size
+  admin_username      = var.username
+  admin_password      = var.password
   disable_password_authentication = "false"
 
   # security_type = "TrustedLaunch"
   secure_boot_enabled = "true"
   
   os_disk {
-    name                 = "myOsDisk"
+    name                 = "myOsDisk-${count.index}"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
@@ -166,9 +170,9 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   #   sku       = "22_04-lts"
   #   version   = "server"
   # }
-  source_image_id = "/subscriptions/12d08a43-87ab-49fc-b06f-d1d31622044a/resourcegroups/Devops_project/providers/Microsoft.Compute/galleries/azure_compute_gallery/images/custom_jenkins_image1/versions/1.0.0"
+  source_image_id = var.source_image
   
-  computer_name  = "Jenkins"
+  computer_name  = var.computer_names[count.index]
   #admin_username = var.username
 
   # admin_ssh_key {
@@ -182,23 +186,7 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   connection {
       type        = "ssh"
       host        = self.public_ip_address
-      user        = "azureuser"
-      password = "Azure@123456"
+      user        = var.username
+      password = var.password
     }
-
-  
-  # provisioner "file" {
-  #   source      = "jenkins1.sh"
-  #   destination = "/tmp/jenkins1.sh"
-  # }
-  # # provisioner "file" {
-  # #   source      = "docker.sh"
-  # #   destination = "/tmp/docker.sh"
-  # # }
-
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "/bin/bash" ,"-c", "/home/azureuser/install.sh"
-  #   ]
-  # }
 }
