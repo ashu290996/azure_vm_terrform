@@ -4,7 +4,7 @@ resource "random_pet" "rg_name" {
 
 resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
-  name     = "Devops_project_dev"
+  name     = var.rg_nm
 }
 
 # Create virtual network

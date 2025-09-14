@@ -39,11 +39,11 @@ variable "source_image" {
 variable "rg_nm" {
   type = string
   description = "The name of the resource group."
-  default = "Devops_project_dev"
+  default = "Devops_project"
 }
 
 variable "computer_names" {
   type = list(string)
   description = "computer name"
-  default = ["Jenkins", "Jenkins1"] 
+  default = ["Jenkins"] 
 }
