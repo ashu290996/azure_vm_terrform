@@ -4,6 +4,12 @@ variable "resource_group_location" {
   description = "Location of the resource group."
 }
 
+variable "environment" {
+  description = "Environment name (dev, prod, etc.)"
+  type        = string
+  default     = terraform.workspace
+}
+
 variable "resource_group_name_prefix" {
   type        = string
   default     = "rg"
