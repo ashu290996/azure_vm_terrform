@@ -5,9 +5,12 @@ variable "resource_group_location" {
 }
 
 variable "environment" {
-  description = "Environment name (dev, prod, etc.)"
+  description = "Environment name"
   type        = string
-  default     = terraform.workspace
+}
+
+locals {
+  environment = terraform.workspace
 }
 
 variable "resource_group_name_prefix" {
@@ -52,4 +55,18 @@ variable "computer_names" {
   type = list(string)
   description = "computer name"
   default = ["Jenkins"] 
+}
+
+variable "key_vault_name" {
+  type = string
+  description = "The name of the Key Vault."
+  default = "devopsprojectkeyvault1"
+  
+}
+
+variable "key_vault_rg" {
+  type = string
+  description = "The resource group of the Key Vault."
+  default = "Keyvault_rg"
+  
 }

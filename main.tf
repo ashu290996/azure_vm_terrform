@@ -9,6 +9,7 @@ resource "azurerm_resource_group" "rg" {
 
 # Create virtual network
 resource "azurerm_virtual_network" "my_terraform_network" {
+  count = length(var.computer_names)
   name                = "myVnet-${terraform.workspace}-${count.index}"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
@@ -17,9 +18,10 @@ resource "azurerm_virtual_network" "my_terraform_network" {
 
 # Create subnet
 resource "azurerm_subnet" "my_terraform_subnet" {
-  name                 = "mySubnet-${terraform.workspace}-${count.index}"
+  count = length(var.computer_names)
+  name                 = "mySubnet-${terraform.workspace}"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.my_terraform_network.name
+  virtual_network_name = azurerm_virtual_network.my_terraform_network[count.index].name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
@@ -34,6 +36,7 @@ resource "azurerm_public_ip" "my_terraform_public_ip" {
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "my_terraform_nsg" {
+  count = length(var.computer_names)
   name                = "myNetworkSecurityGroup-${terraform.workspace}-${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -111,7 +114,7 @@ resource "azurerm_network_interface" "my_terraform_nic" {
 
   ip_configuration {
     name                          = "my_nic_configuration-${terraform.workspace}-${count.index}"
-    subnet_id                     = azurerm_subnet.my_terraform_subnet.id
+    subnet_id                     = azurerm_subnet.my_terraform_subnet[count.index].id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.my_terraform_public_ip[count.index].id
   }
@@ -121,7 +124,7 @@ resource "azurerm_network_interface" "my_terraform_nic" {
 resource "azurerm_network_interface_security_group_association" "example" {
   count = length(var.computer_names)
   network_interface_id      = azurerm_network_interface.my_terraform_nic[count.index].id
-  network_security_group_id = azurerm_network_security_group.my_terraform_nsg.id
+  network_security_group_id = azurerm_network_security_group.my_terraform_nsg[count.index].id
 }
 
 # Generate random text for a unique storage account name
@@ -143,6 +146,19 @@ resource "random_id" "random_id" {
 #   account_replication_type = "LRS"
 # }
 
+data "azurerm_key_vault" "kv" {
+  name                = var.key_vault_name
+  resource_group_name = var.key_vault_rg
+}
+
+data "azurerm_key_vault_secret" "jenkins-admin-password" {
+  name         = "jenkins-admin-password"
+  key_vault_id = data.azurerm_key_vault.kv.id
+}
+data "azurerm_key_vault_secret" "jenkins-admin-username" {
+  name         = "jenkins-admin-username"
+  key_vault_id = data.azurerm_key_vault.kv.id
+}
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   count                 = length(var.computer_names)
@@ -151,8 +167,8 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.my_terraform_nic[count.index].id]
   size                  = var.size
-  admin_username      = var.username
-  admin_password      = var.password
+  admin_username      = data.azurerm_key_vault_secret.jenkins-admin-username.value
+  admin_password      = data.azurerm_key_vault_secret.jenkins-admin-password.value
   disable_password_authentication = "false"
 
   # security_type = "TrustedLaunch"
@@ -183,10 +199,14 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   # boot_diagnostics {
   #   storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
   # }
+
+  
   connection {
       type        = "ssh"
       host        = self.public_ip_address
       user        = var.username
       password = var.password
     }
+
+  
 }
