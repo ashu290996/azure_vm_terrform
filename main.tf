@@ -171,7 +171,7 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   admin_password      = data.azurerm_key_vault_secret.jenkins-admin-password.value
   disable_password_authentication = "false"
 
-  # security_type = "TrustedLaunch"
+  #security_type = "TrustedLaunch"
   secure_boot_enabled = "true"
   
   os_disk {
@@ -179,18 +179,17 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }
-  #security_type = "TrustedLaunch"
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "ubuntu-24_04-lts"
-    sku       = "22_04-lts"
-    version   = "server"
-  }
+
+source_image_reference {
+  publisher = "Canonical"
+  offer     = "0001-com-ubuntu-server-jammy"
+  sku       = "22_04-lts-gen2"
+  version   = "latest"
+}
   #source_image_id = var.source_image
   
   computer_name  = var.computer_names[count.index]
-
-  user_data = file ("jenkins1.sh")
+  custom_data = base64encode(file("jenkins1.sh"))
   #admin_username = var.username
 
   # admin_ssh_key {
