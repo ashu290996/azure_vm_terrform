@@ -1,0 +1,35 @@
+# Terraform files
+#*.tfstate
+#*.tfstate.*
+.crash
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+terraform.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform/providers/registry.terraform.io/hashicorp/azurerm/3.117.1/windows_386/terraform-provider-azurerm_v3.117.1_x5.exe
+.terraform/providers/registry.terraform.io/azure/azapi/1.15.0/windows_386/terraform-provider-azapi_v1.15.0.exe
+# Sensitive files
+*.pem
+*.key
+*.p12
+*.crt
+
+# Local override files
+*.env
+*.tfvars.local
+
+# IDE / OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Log files
+*.log
+
+.terraform/
