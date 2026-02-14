@@ -28,8 +28,7 @@ variable "username" {
 
 variable "password" {
   type       = string
-  description = "password "
-  default     = "Azure@123456"
+  description = "password"
   sensitive   = true
   }
 

@@ -180,15 +180,17 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
     storage_account_type = "Premium_LRS"
   }
   #security_type = "TrustedLaunch"
-  # source_image_reference {
-  #   publisher = "Canonical"
-  #   offer     = "ubuntu-24_04-lts"
-  #   sku       = "22_04-lts"
-  #   version   = "server"
-  # }
-  source_image_id = var.source_image
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "22_04-lts"
+    version   = "server"
+  }
+  #source_image_id = var.source_image
   
   computer_name  = var.computer_names[count.index]
+
+  user_data = file ("jenkins1.sh")
   #admin_username = var.username
 
   # admin_ssh_key {
