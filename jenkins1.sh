@@ -22,9 +22,9 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 echo "Adding current user ($USER) to docker group..."
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $USER 
 echo "Refreshing group membership for Docker (will only affect new shells)..."
-sudo newgrp docker
+sudo newgrp docker <<EONG
 
 echo "Changing permissions on Docker socket..."
 sudo chmod 666 /var/run/docker.sock
@@ -114,4 +114,5 @@ sudo apt-get install -y helm
 echo "Helm installation complete"
 
 echo "Setup completed successfully!"
+EONG
 echo "⚠️ Please log out and log back in for Docker group changes to take effect."
