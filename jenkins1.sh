@@ -23,7 +23,11 @@ sudo systemctl start docker
 
 echo "Adding current user ($USER) to docker group..."
 sudo usermod -aG docker $USER
+echo "Refreshing group membership for Docker (will only affect new shells)..."
+sudo newgrp docker
 
+echo "Changing permissions on Docker socket..."
+sudo chmod 666 /var/run/docker.sock
 # -----------------------------
 # SonarQube
 # -----------------------------

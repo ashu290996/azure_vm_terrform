@@ -53,7 +53,7 @@ variable "rg_nm" {
 variable "computer_names" {
   type = list(string)
   description = "computer name"
-  default = ["Jenkins"] 
+  default = ["Devopsagent"] 
 }
 
 variable "key_vault_name" {
