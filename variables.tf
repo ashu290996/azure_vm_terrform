@@ -69,3 +69,41 @@ variable "key_vault_rg" {
   default = "Keyvault_rg"
   
 }
+
+variable "direction" {
+  type = string
+  description = "The direction of the security rule."
+  default = "Inbound"
+  
+}
+
+variable "access" {
+  type = string
+  description = "The access of the security rule."
+  default = "Allow"
+}
+
+variable "protocol" {
+  type = string
+  description = "The protocol of the security rule."
+  default = "Tcp"
+  
+}
+
+variable "source_port_range" {
+  type = string
+  description = "The source port range of the security rule."
+  default = "*"
+  
+}
+
+
+
+variable "inbound_ports" {
+  default = {
+    SSH     = 22
+    jenkins = 8080
+    sonar   = 9000
+    nexus   = 8081
+  }
+}

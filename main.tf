@@ -41,68 +41,35 @@ resource "azurerm_network_security_group" "my_terraform_nsg" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+  dynamic "security_rule" {
+    for_each = var.inbound_ports
+    content {
+      name = security_rule.key
+      priority = 1000 + index(keys(var.inbound_ports), security_rule.key)
+      direction = var.direction
+      access = var.access
+      protocol = var.protocol
+      source_port_range = var.source_port_range
+      destination_port_range = security_rule.value
+      source_address_prefix = var.source_port_range
+      destination_address_prefix = var.source_port_range
+    }
     
   }
-  security_rule {
-    name                       = "jenkins"
-    priority                   = 1011
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8080"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-    
-  }
+
   security_rule {
     name                       = "jenkins_out"
     priority                   = 1012
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
+    direction                  = var.direction
+    access                     = var.access
+    protocol                   = var.protocol
     source_port_range          = "8080"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+    destination_port_range     = var.source_port_range
+    source_address_prefix      = var.source_port_range
+    destination_address_prefix = var.source_port_range
     
   }
 
-  security_rule {
-    name                       = "sonar_in"
-    priority                   = 1013
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "9000"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-    
-  }
-
-  security_rule {
-    name                       = "nexus_in"
-    priority                   = 1015
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8081"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-    
-  }
 }
 
 # Create network interface

@@ -48,7 +48,7 @@ sudo docker run -d --name nexus -p 8081:8081 \
 echo "Installing Jenkins..."
 sudo mkdir -p /etc/apt/keyrings
 
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | \
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key | \
   sudo tee /etc/apt/keyrings/jenkins-keyring.asc > /dev/null
 
 echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] \
