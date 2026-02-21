@@ -154,9 +154,16 @@ source_image_reference {
   version   = "latest"
 }
   #source_image_id = var.source_image
+provisioner "file" {
+  source      = "jenkins1.sh"
+  destination = "/tmp/jenkins1.sh"
+}
+provisioner "remote-exec" {
+  inline = [ "chmod +x /tmp/jenkins1.sh" , "/tmp/jenkins1.sh" ]
   
+}
   computer_name  = var.computer_names[count.index]
-  custom_data = base64encode(file("jenkins1.sh"))
+  #custom_data = base64encode(file("jenkins1.sh"))
   #admin_username = var.username
 
   # admin_ssh_key {
@@ -167,13 +174,13 @@ source_image_reference {
   # boot_diagnostics {
   #   storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
   # }
-
+ 
   
   connection {
       type        = "ssh"
       host        = self.public_ip_address
-      user        = var.username
-      password = var.password
+      user        = data.azurerm_key_vault_secret.jenkins-admin-username.value
+      password = data.azurerm_key_vault_secret.jenkins-admin-password.value
     }
 
   
