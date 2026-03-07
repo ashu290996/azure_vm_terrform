@@ -45,7 +45,7 @@ variables:
   - name: tfStateResourceGroup
     value: 'rg-terraform-state'
   - name: tfStateStorageAccount
-    value: 'stterraformstate$(parameters.environment)'
+    value: 'remotebackened'
   - name: tfStateContainer
     value: 'tfstate'
   - name: tfStateKey
