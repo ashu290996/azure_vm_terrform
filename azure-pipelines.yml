@@ -74,7 +74,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(workingDirectory)'
-              backendServiceArm: 'Azure-Service-Connection'
+              backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
               backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
               backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
               backendAzureRmContainerName: '$(tfStateContainer)'
@@ -120,7 +120,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(workingDirectory)'
-              backendServiceArm: 'Azure-Service-Connection'
+              backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
               backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
               backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
               backendAzureRmContainerName: '$(tfStateContainer)'
@@ -133,7 +133,7 @@ stages:
               command: 'plan'
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
-              environmentServiceNameAzureRM: 'Azure-Service-Connection'
+              environmentServiceNameAzureRM: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'
@@ -179,7 +179,7 @@ stages:
                     provider: 'azurerm'
                     command: 'init'
                     workingDirectory: '$(workingDirectory)'
-                    backendServiceArm: 'Azure-Service-Connection'
+                    backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
                     backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
                     backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
                     backendAzureRmContainerName: '$(tfStateContainer)'
@@ -192,12 +192,12 @@ stages:
                     command: 'apply'
                     workingDirectory: '$(workingDirectory)'
                     commandOptions: 'tfplan'
-                    environmentServiceNameAzureRM: 'Azure-Service-Connection'
+                    environmentServiceNameAzureRM: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
 
                 - task: AzureCLI@2
                   displayName: 'Get AKS Credentials'
                   inputs:
-                    azureSubscription: 'Azure-Service-Connection'
+                    azureSubscription: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
                     scriptType: 'bash'
                     scriptLocation: 'inlineScript'
                     inlineScript: |
@@ -235,7 +235,7 @@ stages:
                     provider: 'azurerm'
                     command: 'init'
                     workingDirectory: '$(workingDirectory)'
-                    backendServiceArm: 'Azure-Service-Connection'
+                    backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
                     backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
                     backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
                     backendAzureRmContainerName: '$(tfStateContainer)'
@@ -248,4 +248,4 @@ stages:
                     command: 'destroy'
                     workingDirectory: '$(workingDirectory)'
                     commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -auto-approve'
-                    environmentServiceNameAzureRM: 'Azure-Service-Connection'
+                    environmentServiceNameAzureRM: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
