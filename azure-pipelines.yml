@@ -5,19 +5,18 @@
 trigger:
   branches:
     include:
-      - main
-      - develop
-  paths:
-    include:
-      - terraform-aks/**
+      - aks-cluster-new
+  # paths:
+  #   include:
+  #     - terraform-aks/**
 
-pr:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - terraform-aks/**
+# pr:
+#   branches:
+#     include:
+#       - main
+#   paths:
+#     include:
+#       - terraform-aks/**
 
 parameters:
   - name: environment
