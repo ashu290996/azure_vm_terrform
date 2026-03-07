@@ -1,0 +1,252 @@
+# =============================================================================
+# Azure DevOps Pipeline for AKS Terraform Deployment
+# =============================================================================
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - terraform-aks/**
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - terraform-aks/**
+
+parameters:
+  - name: environment
+    displayName: 'Target Environment'
+    type: string
+    default: 'dev'
+    values:
+      - dev
+      - staging
+      - prod
+
+  - name: action
+    displayName: 'Terraform Action'
+    type: string
+    default: 'plan'
+    values:
+      - plan
+      - apply
+      - destroy
+
+variables:
+  - name: terraformVersion
+    value: '1.5.7'
+  - name: workingDirectory
+    value: '$(System.DefaultWorkingDirectory)/terraform-aks'
+  - name: tfStateResourceGroup
+    value: 'rg-terraform-state'
+  - name: tfStateStorageAccount
+    value: 'stterraformstate$(parameters.environment)'
+  - name: tfStateContainer
+    value: 'tfstate'
+  - name: tfStateKey
+    value: 'aks-cluster-$(parameters.environment).tfstate'
+
+stages:
+  # =============================================================================
+  # Stage 1: Validate
+  # =============================================================================
+  - stage: Validate
+    displayName: 'Validate Terraform'
+    jobs:
+      - job: ValidateTerraform
+        displayName: 'Terraform Validate'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: TerraformInstaller@1
+            displayName: 'Install Terraform $(terraformVersion)'
+            inputs:
+              terraformVersion: '$(terraformVersion)'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(workingDirectory)'
+              backendServiceArm: 'Azure-Service-Connection'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Validate'
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(workingDirectory)'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Format Check'
+            inputs:
+              provider: 'azurerm'
+              command: 'custom'
+              customCommand: 'fmt'
+              commandOptions: '-check -recursive'
+              workingDirectory: '$(workingDirectory)'
+            continueOnError: true
+
+  # =============================================================================
+  # Stage 2: Plan
+  # =============================================================================
+  - stage: Plan
+    displayName: 'Terraform Plan'
+    dependsOn: Validate
+    jobs:
+      - job: TerraformPlan
+        displayName: 'Generate Plan'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: TerraformInstaller@1
+            displayName: 'Install Terraform $(terraformVersion)'
+            inputs:
+              terraformVersion: '$(terraformVersion)'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Init'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(workingDirectory)'
+              backendServiceArm: 'Azure-Service-Connection'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
+
+          - task: TerraformTaskV4@4
+            displayName: 'Terraform Plan'
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              workingDirectory: '$(workingDirectory)'
+              commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
+              environmentServiceNameAzureRM: 'Azure-Service-Connection'
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Plan Artifact'
+            inputs:
+              targetPath: '$(workingDirectory)/tfplan'
+              artifact: 'terraform-plan-${{ parameters.environment }}'
+              publishLocation: 'pipeline'
+
+  # =============================================================================
+  # Stage 3: Apply (Manual Approval Required)
+  # =============================================================================
+  - stage: Apply
+    displayName: 'Terraform Apply'
+    dependsOn: Plan
+    condition: and(succeeded(), eq('${{ parameters.action }}', 'apply'))
+    jobs:
+      - deployment: TerraformApply
+        displayName: 'Apply Infrastructure'
+        pool:
+          vmImage: 'ubuntu-latest'
+        environment: 'AKS-${{ parameters.environment }}'  # Environment with approval gates
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: TerraformInstaller@1
+                  displayName: 'Install Terraform $(terraformVersion)'
+                  inputs:
+                    terraformVersion: '$(terraformVersion)'
+
+                - task: DownloadPipelineArtifact@2
+                  displayName: 'Download Plan Artifact'
+                  inputs:
+                    buildType: 'current'
+                    artifactName: 'terraform-plan-${{ parameters.environment }}'
+                    targetPath: '$(workingDirectory)'
+
+                - task: TerraformTaskV4@4
+                  displayName: 'Terraform Init'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'init'
+                    workingDirectory: '$(workingDirectory)'
+                    backendServiceArm: 'Azure-Service-Connection'
+                    backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+                    backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+                    backendAzureRmContainerName: '$(tfStateContainer)'
+                    backendAzureRmKey: '$(tfStateKey)'
+
+                - task: TerraformTaskV4@4
+                  displayName: 'Terraform Apply'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'apply'
+                    workingDirectory: '$(workingDirectory)'
+                    commandOptions: 'tfplan'
+                    environmentServiceNameAzureRM: 'Azure-Service-Connection'
+
+                - task: AzureCLI@2
+                  displayName: 'Get AKS Credentials'
+                  inputs:
+                    azureSubscription: 'Azure-Service-Connection'
+                    scriptType: 'bash'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      echo "AKS cluster deployed successfully!"
+                      echo "Run the following command to get credentials:"
+                      echo "az aks get-credentials --resource-group rg-myaks-${{ parameters.environment }} --name aks-myaks-${{ parameters.environment }}"
+
+  # =============================================================================
+  # Stage 4: Destroy (Manual Trigger Only)
+  # =============================================================================
+  - stage: Destroy
+    displayName: 'Terraform Destroy'
+    dependsOn: Plan
+    condition: and(succeeded(), eq('${{ parameters.action }}', 'destroy'))
+    jobs:
+      - deployment: TerraformDestroy
+        displayName: 'Destroy Infrastructure'
+        pool:
+          vmImage: 'ubuntu-latest'
+        environment: 'AKS-${{ parameters.environment }}-Destroy'  # Separate environment for destroy approval
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: TerraformInstaller@1
+                  displayName: 'Install Terraform $(terraformVersion)'
+                  inputs:
+                    terraformVersion: '$(terraformVersion)'
+
+                - task: TerraformTaskV4@4
+                  displayName: 'Terraform Init'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'init'
+                    workingDirectory: '$(workingDirectory)'
+                    backendServiceArm: 'Azure-Service-Connection'
+                    backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+                    backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+                    backendAzureRmContainerName: '$(tfStateContainer)'
+                    backendAzureRmKey: '$(tfStateKey)'
+
+                - task: TerraformTaskV4@4
+                  displayName: 'Terraform Destroy'
+                  inputs:
+                    provider: 'azurerm'
+                    command: 'destroy'
+                    workingDirectory: '$(workingDirectory)'
+                    commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -auto-approve'
+                    environmentServiceNameAzureRM: 'Azure-Service-Connection'
