@@ -79,7 +79,7 @@ stages:
           - task: CmdLine@2
             displayName: Terraform Init
             inputs:
-             script: 
+             script: |
               terraform init \
                 -backend-config="storage_account_name=remotebackened" \
                 -backend-config="container_name=tfstate" \
