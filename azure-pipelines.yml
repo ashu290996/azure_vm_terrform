@@ -43,7 +43,7 @@ variables:
   - name: workingDirectory
     value: '$(System.DefaultWorkingDirectory)/terraform-aks'
   - name: tfStateResourceGroup
-    value: 'rg-terraform-state'
+    value: 'azure-terraform-rg'
   - name: tfStateStorageAccount
     value: 'remotebackened'
   - name: tfStateContainer
@@ -75,7 +75,8 @@ stages:
             displayName: 'Terraform validate'
             inputs:
              script: 'terraform -version'
-
+           
+          
           - task: TerraformTaskV4@4
             displayName: 'Terraform Init'
             inputs:
