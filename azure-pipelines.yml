@@ -73,7 +73,7 @@ stages:
           - task: CmdLine@2
             displayName: 'Terraform install'
             inputs:
-             script: 'sudo apt install terraform=1.5.7'
+             script: 'snap install terraform=1.5.7'
           
           - task: CmdLine@2
             displayName: 'Terraform validate'
