@@ -76,7 +76,14 @@ stages:
             inputs:
              script: 'terraform -version'
            
-          
+          - script: |
+              terraform init \
+                -backend-config="storage_account_name=remotebackened" \
+                -backend-config="container_name=tfstate" \
+                -backend-config="key=aks-cluster-${{ parameters.environment }}.tfstate" \
+                -backend-config="resource_group_name=rg-terraform-state"
+              workingDirectory: $(workingDirectory)
+              displayName: Terraform Init
           # - task: TerraformTaskV4@4
           #   displayName: 'Terraform Init'
           #   inputs:
