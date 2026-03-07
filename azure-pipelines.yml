@@ -70,10 +70,6 @@ stages:
             inputs:
               terraformVersion: '$(terraformVersion)'
           
-          - task: CmdLine@2
-            displayName: 'Terraform install'
-            inputs:
-             script: 'sudo snap install terraform=1.5.7'
           
           - task: CmdLine@2
             displayName: 'Terraform validate'
