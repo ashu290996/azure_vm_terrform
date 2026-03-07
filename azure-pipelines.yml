@@ -50,6 +50,8 @@ variables:
     value: 'tfstate'
   - name: tfStateKey
     value: 'aks-cluster-$(parameters.environment).tfstate'
+  - name: azureSubscription
+    value: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
 
 stages:
   # =============================================================================
@@ -74,7 +76,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(workingDirectory)'
-              backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+              backendServiceArm: '$(azureSubscription)'
               backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
               backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
               backendAzureRmContainerName: '$(tfStateContainer)'
@@ -120,7 +122,7 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(workingDirectory)'
-              backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+              backendServiceArm: '$(azureSubscription)'
               backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
               backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
               backendAzureRmContainerName: '$(tfStateContainer)'
@@ -133,7 +135,7 @@ stages:
               command: 'plan'
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
-              environmentServiceNameAzureRM: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+              environmentServiceNameAzureRM: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'
@@ -179,7 +181,7 @@ stages:
                     provider: 'azurerm'
                     command: 'init'
                     workingDirectory: '$(workingDirectory)'
-                    backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+                    backendServiceArm: '$(azureSubscription)'
                     backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
                     backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
                     backendAzureRmContainerName: '$(tfStateContainer)'
@@ -192,12 +194,12 @@ stages:
                     command: 'apply'
                     workingDirectory: '$(workingDirectory)'
                     commandOptions: 'tfplan'
-                    environmentServiceNameAzureRM: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+                    environmentServiceNameAzureRM: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
 
                 - task: AzureCLI@2
                   displayName: 'Get AKS Credentials'
                   inputs:
-                    azureSubscription: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+                    azureSubscription: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
                     scriptType: 'bash'
                     scriptLocation: 'inlineScript'
                     inlineScript: |
@@ -235,7 +237,7 @@ stages:
                     provider: 'azurerm'
                     command: 'init'
                     workingDirectory: '$(workingDirectory)'
-                    backendServiceArm: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+                    backendServiceArm: '$(azureSubscription)'
                     backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
                     backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
                     backendAzureRmContainerName: '$(tfStateContainer)'
@@ -248,4 +250,4 @@ stages:
                     command: 'destroy'
                     workingDirectory: '$(workingDirectory)'
                     commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -auto-approve'
-                    environmentServiceNameAzureRM: 'Pay-As-You-Go(bdf99741-92c9-4e12-b630-ce03a2ca89a6)'
+                    environmentServiceNameAzureRM: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
