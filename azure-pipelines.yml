@@ -70,8 +70,15 @@ stages:
             inputs:
               terraformVersion: '$(terraformVersion)'
           
-          - script: terraform version
-            displayName: Verify Terraform
+          - task: CmdLine@2
+            displayName: 'Terraform install'
+            inputs:
+             script: 'sudo apt install terraform=1.5.7'
+          
+          - task: CmdLine@2
+            displayName: 'Terraform validate'
+            inputs:
+             script: 'terraform -version'
 
           - task: TerraformTaskV4@4
             displayName: 'Terraform Init'
