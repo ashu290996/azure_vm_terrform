@@ -67,15 +67,16 @@ echo "Jenkins installation complete"
 # Trivy
 # -----------------------------
 echo "Installing Trivy..."
-curl -fsSL https://aquasecurity.github.io/trivy-repo/deb/public.key | \
-  sudo gpg --dearmor -o /etc/apt/keyrings/trivy.gpg
+sudo mkdir -p /etc/apt/keyrings
 
-echo "deb [signed-by=/etc/apt/keyrings/trivy.gpg] \
-https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | \
-sudo tee /etc/apt/sources.list.d/trivy.list > /dev/null
+curl -fsSL https://aquasecurity.github.io/trivy-repo/deb/public.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/trivy.gpg
 
-sudo apt-get update -y
-sudo apt-get install -y trivy
+echo "deb [signed-by=/etc/apt/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb jammy main" \
+  | sudo tee /etc/apt/sources.list.d/trivy.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install trivy -y
 
 echo "Trivy installation complete"
 

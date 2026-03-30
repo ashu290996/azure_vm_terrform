@@ -97,6 +97,29 @@ variable "source_port_range" {
   
 }
 
+variable "backend_resource_group_name_storage_account_name" {
+  type = string
+  description = "The name of the resource group for the backend storage account."
+  default = "azure-terraform-rg"
+}
+
+variable "backend_storage_account_name" {
+  type = string
+  description = "The name of the backend storage account."
+  default = "remotebackened"
+}
+
+variable "backend_container_name" {
+  type = string
+  description = "The name of the backend container."
+  default = "tfstate"
+}
+
+variable "backend_key" {
+  type = string
+  description = "The name of the backend key."
+  default = "terraform.tfstate"
+}
 
 
 variable "inbound_ports" {
