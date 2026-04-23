@@ -113,8 +113,17 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
+              backendServiceArm: '$(azureSubscription)'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
               workingDirectory: '$(workingDirectory)'
-
+          
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
           - task: TerraformTaskV4@4
             displayName: 'Terraform Format Check'
             inputs:
