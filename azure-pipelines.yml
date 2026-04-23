@@ -116,7 +116,7 @@ stages:
               backendServiceArm: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
               backendAzureRmResourceGroupName: 'azure-terraform-rg'
               backendAzureRmStorageAccountName: 'remotebackened'
-              backendAzureRmContainerName: '$(tfstate)'
+              backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'aks-cluster-dev.tfstate'
               workingDirectory: '$(workingDirectory)'
           
