@@ -86,17 +86,17 @@ stages:
                 -backend-config="key=aks-cluster-${{ parameters.environment }}.tfstate" \
                 -backend-config="resource_group_name=rg-terraform-state"
             
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform Init'
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              workingDirectory: '$(workingDirectory)'
-              backendServiceArm: '$(azureSubscription)'
-              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
-              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
-              backendAzureRmContainerName: '$(tfStateContainer)'
-              backendAzureRmKey: '$(tfStateKey)'
+          # - task: TerraformTask@5
+          #   displayName: 'Terraform Init'
+          #   inputs:
+          #     provider: 'azurerm'
+          #     command: 'init'
+          #     workingDirectory: '$(workingDirectory)'
+          #     backendServiceArm: '$(azureSubscription)'
+          #     backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+          #     backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+          #     backendAzureRmContainerName: '$(tfStateContainer)'
+          #     backendAzureRmKey: '$(tfStateKey)'
           # - task: TerraformTask@4
           #   displayName: 'Terraform Init1'
           #   inputs:
@@ -108,16 +108,16 @@ stages:
           #     backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
           #     backendAzureRmContainerName: '$(tfStateContainer)'
           #     backendAzureRmKey: '$(tfStateKey)'
-          - task: TerraformTaskV4@4
+          - task: TerraformTask@5
             displayName: 'Terraform Validate'
             inputs:
               provider: 'azurerm'
               command: 'validate'
-              backendServiceArm: '$(azureSubscription)'
-              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
-              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
-              backendAzureRmContainerName: '$(tfStateContainer)'
-              backendAzureRmKey: '$(tfStateKey)'
+              backendServiceArm: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
+              backendAzureRmResourceGroupName: 'azure-terraform-rg'
+              backendAzureRmStorageAccountName: 'remotebackened'
+              backendAzureRmContainerName: '$(tfstate)'
+              backendAzureRmKey: 'aks-cluster-dev.tfstate'
               workingDirectory: '$(workingDirectory)'
           
           - task: TerraformTask@5
