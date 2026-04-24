@@ -51,7 +51,7 @@ variables:
   - name: tfStateKey
     value: 'aks-cluster-dev.tfstate'
   - name: azureSubscription
-    value: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
+    value: '12d08a43-87ab-49fc-b06f-d1d31622044a'
 
 stages:
   # =============================================================================
@@ -133,6 +133,11 @@ stages:
               customCommand: 'fmt'
               commandOptions: '-check -recursive'
               workingDirectory: '$(workingDirectory)'
+              backendServiceArm: '$(azureSubscription)'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
             continueOnError: true
 
   # =============================================================================
@@ -169,9 +174,14 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
+              backendServiceArm: '$(azureSubscription)'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
-              environmentServiceNameAzureRM: 'Pay-As-You-Go(12d08a43-87ab-49fc-b06f-d1d31622044a)'
+              environmentServiceNameAzureRM: '12d08a43-87ab-49fc-b06f-d1d31622044a'
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'
