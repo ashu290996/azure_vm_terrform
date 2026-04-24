@@ -41,7 +41,7 @@ variables:
   - name: terraformVersion
     value: '1.5.7'
   - name: workingDirectory
-    value: '$(System.DefaultWorkingDirectory)/terraform-aks'
+    value: '$(System.DefaultWorkingDirectory)'
   - name: tfStateResourceGroup
     value: 'azure-terraform-rg'
   - name: tfStateStorageAccount
