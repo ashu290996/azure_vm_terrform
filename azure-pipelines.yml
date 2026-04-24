@@ -162,6 +162,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
+              commandOptions: '-upgrade -reconfigure'
               workingDirectory: '$(workingDirectory)'
               backendServiceArm: '$(azureSubscription)'
               backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
@@ -169,7 +170,7 @@ stages:
               backendAzureRmContainerName: '$(tfStateContainer)'
               backendAzureRmKey: '$(tfStateKey)'
 
-          - task: TerraformTaskV4@4
+          - task: TerraformTask@5
             displayName: 'Terraform Plan'
             inputs:
               provider: 'azurerm'
@@ -182,6 +183,7 @@ stages:
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
               environmentServiceNameAzureRM: '12d08a43-87ab-49fc-b06f-d1d31622044a'
+
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'
