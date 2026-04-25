@@ -223,6 +223,11 @@ stages:
                     workingDirectory: '$(workingDirectory)'
                     commandOptions: '-auto-approve tfplan'
                     environmentServiceNameAzureRM: '$(azureSubscription)'
+                    backendServiceArm: '$(azureSubscription)'
+                    backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+                    backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+                    backendAzureRmContainerName: '$(tfStateContainer)'
+                    backendAzureRmKey: '$(tfStateKey)'
 
                 - task: AzureCLI@2
                   displayName: 'Get AKS Credentials'
@@ -278,4 +283,9 @@ stages:
                     command: 'destroy'
                     workingDirectory: '$(workingDirectory)'
                     commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -auto-approve'
+                    backendServiceArm: '$(azureSubscription)'
+                    backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+                    backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+                    backendAzureRmContainerName: '$(tfStateContainer)'
+                    backendAzureRmKey: '$(tfStateKey)'
                     environmentServiceNameAzureRM: '$(azureSubscription)'
