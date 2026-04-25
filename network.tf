@@ -57,7 +57,7 @@ resource "azurerm_subnet" "private_endpoint" {
   virtual_network_name = azurerm_virtual_network.aks.name
   address_prefixes     = [var.private_endpoint_subnet_address_prefix]
 
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 }
 
 # -----------------------------------------------------------------------------
@@ -168,11 +168,11 @@ resource "azurerm_subnet_network_security_group_association" "appgw" {
 # Route Table (for custom routing if needed)
 # -----------------------------------------------------------------------------
 resource "azurerm_route_table" "aks" {
-  name                          = "rt-aks-${var.project_name}-${var.environment}"
-  location                      = azurerm_resource_group.aks.location
-  resource_group_name           = azurerm_resource_group.aks.name
-  disable_bgp_route_propagation = false
-  tags                          = var.tags
+  name                = "rt-aks-${var.project_name}-${var.environment}"
+  location            = azurerm_resource_group.aks.location
+  resource_group_name = azurerm_resource_group.aks.name
+  bgp_route_propagation_enabled = true
+  tags                = var.tags
 }
 
 # Associate Route Table with AKS Subnet

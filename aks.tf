@@ -20,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   private_cluster_enabled = var.private_cluster_enabled
 
   # Automatic Upgrades
-  automatic_channel_upgrade = var.automatic_channel_upgrade
+  automatic_upgrade_channel = var.automatic_channel_upgrade
 
   # Azure Policy
   azure_policy_enabled = var.azure_policy_enabled
@@ -54,7 +54,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     node_count                   = var.system_node_pool_node_count
     min_count                    = var.system_node_pool_min_count
     max_count                    = var.system_node_pool_max_count
-    enable_auto_scaling          = true
+    #enable_auto_scaling          = true
     os_disk_size_gb              = var.system_node_pool_os_disk_size_gb
     os_disk_type                 = "Managed"
     max_pods                     = var.system_node_pool_max_pods
@@ -99,7 +99,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dynamic "azure_active_directory_role_based_access_control" {
     for_each = var.enable_azure_ad_integration ? [1] : []
     content {
-      managed                = true
+      #managed                = true
       azure_rbac_enabled     = true
       admin_group_object_ids = var.azure_ad_admin_group_object_ids
     }
@@ -183,7 +183,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
   node_count            = var.user_node_pool_node_count
   min_count             = var.user_node_pool_min_count
   max_count             = var.user_node_pool_max_count
-  enable_auto_scaling   = true
+  #enable_auto_scaling   = true
   os_disk_size_gb       = var.user_node_pool_os_disk_size_gb
   os_disk_type          = "Managed"
   max_pods              = var.user_node_pool_max_pods
