@@ -182,7 +182,7 @@ stages:
               backendAzureRmKey: '$(tfStateKey)'
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
-              environmentServiceNameAzureRM: 'azuredevopsarm'
+              environmentServiceNameAzureRM: 'azuredevopssp'
 
 
           - task: PublishPipelineArtifact@1
