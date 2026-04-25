@@ -62,11 +62,9 @@ stages:
           - task: TerraformTaskV4@4
             displayName: 'Terraform Init'
             inputs:
-<<<<<<< HEAD
               provider: 'azurerm'
               command: 'init'
-=======
-             script: 'terraform -version'
+              script: 'terraform -version'
            
           - task: CmdLine@2
             displayName: Terraform Init
@@ -84,17 +82,13 @@ stages:
               provider: 'azurerm'
               command: 'init'
               commandOptions: '-upgrade -reconfigure'
->>>>>>> eedf0bb1357f6fbcd555d108a584fbbb3ee4deef
               workingDirectory: '$(workingDirectory)'
               backendServiceArm: '$(azureSubscription)'
               backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
               backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
               backendAzureRmContainerName: '$(tfStateContainer)'
               backendAzureRmKey: '$(tfStateKey)'
-<<<<<<< HEAD
 
-          - task: TerraformTaskV4@4
-=======
           # - task: TerraformTask@4
           #   displayName: 'Terraform Init1'
           #   inputs:
@@ -107,7 +101,6 @@ stages:
           #     backendAzureRmContainerName: '$(tfStateContainer)'
           #     backendAzureRmKey: '$(tfStateKey)'
           - task: TerraformTask@5
->>>>>>> eedf0bb1357f6fbcd555d108a584fbbb3ee4deef
             displayName: 'Terraform Validate'
             inputs:
               provider: 'azurerm'
@@ -171,12 +164,7 @@ stages:
               backendAzureRmKey: '$(tfStateKey)'
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
-<<<<<<< HEAD
-              environmentServiceNameAzureRM: '$(azureSubscription)'
-=======
               environmentServiceNameAzureRM: 'azuredevopssp'
-
->>>>>>> eedf0bb1357f6fbcd555d108a584fbbb3ee4deef
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'
