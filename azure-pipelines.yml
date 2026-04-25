@@ -59,22 +59,16 @@ stages:
             inputs:
               terraformVersion: '$(terraformVersion)'
 
-          - task: TerraformTaskV4@4
-            displayName: 'Terraform Init'
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              script: 'terraform -version'
-           
-          - task: CmdLine@2
-            displayName: Terraform Init
-            inputs:
-             script: |
-              terraform init \
-                -backend-config="storage_account_name=remotebackened" \
-                -backend-config="container_name=tfstate" \
-                -backend-config="key=aks-cluster-${{ parameters.environment }}.tfstate" \
-                -backend-config="resource_group_name=rg-terraform-state"
+
+          # - task: CmdLine@2
+          #   displayName: Terraform Init
+          #   inputs:
+          #    script: |
+          #     terraform init \
+          #       -backend-config="storage_account_name=remotebackened" \
+          #       -backend-config="container_name=tfstate" \
+          #       -backend-config="key=aks-cluster-${{ parameters.environment }}.tfstate" \
+          #       -backend-config="resource_group_name=rg-terraform-state"
             
           - task: TerraformTask@5
             displayName: 'Terraform Init'
@@ -106,6 +100,11 @@ stages:
               provider: 'azurerm'
               command: 'validate'
               workingDirectory: '$(workingDirectory)'
+              backendServiceArm: '$(azureSubscription)'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
 
           - task: TerraformTaskV4@4
             displayName: 'Terraform Format Check'
