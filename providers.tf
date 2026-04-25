@@ -3,16 +3,16 @@
 # =============================================================================
 
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.9.0"
 
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.85.0"
+      version = "~> 4.12.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.47.0"
+      version = "~> 3.0.2"
     }
     random = {
       source  = "hashicorp/random"
@@ -30,6 +30,8 @@ terraform {
 }
 
 provider "azurerm" {
+  #skip_provider_registration = true
+
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
