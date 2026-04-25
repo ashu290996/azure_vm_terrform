@@ -54,7 +54,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     node_count                   = var.system_node_pool_node_count
     min_count                    = var.system_node_pool_min_count
     max_count                    = var.system_node_pool_max_count
-    #enable_auto_scaling          = true
+    auto_scaling_enabled         = true
     os_disk_size_gb              = var.system_node_pool_os_disk_size_gb
     os_disk_type                 = "Managed"
     max_pods                     = var.system_node_pool_max_pods
@@ -181,9 +181,9 @@ resource "azurerm_kubernetes_cluster_node_pool" "user" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.user_node_pool_vm_size
   node_count            = var.user_node_pool_node_count
-  min_count             = Null
-  max_count             = Null
-  #enable_auto_scaling   = true
+  min_count             = var.user_node_pool_min_count
+  max_count             = var.user_node_pool_max_count
+  auto_scaling_enabled  = true
   os_disk_size_gb       = var.user_node_pool_os_disk_size_gb
   os_disk_type          = "Managed"
   max_pods              = var.user_node_pool_max_pods

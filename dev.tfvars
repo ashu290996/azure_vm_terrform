@@ -24,23 +24,23 @@ tags = {
 # Network Configuration
 # -----------------------------------------------------------------------------
 vnet_address_space                     = ["10.0.0.0/16"]
-aks_subnet_address_prefix              = "10.0.0.0/20"      # 4096 IPs for AKS
-appgw_subnet_address_prefix            = "10.0.16.0/24"     # 256 IPs for App Gateway
-private_endpoint_subnet_address_prefix = "10.0.17.0/24"     # 256 IPs for Private Endpoints
+aks_subnet_address_prefix              = "10.0.0.0/20"  # 4096 IPs for AKS
+appgw_subnet_address_prefix            = "10.0.16.0/24" # 256 IPs for App Gateway
+private_endpoint_subnet_address_prefix = "10.0.17.0/24" # 256 IPs for Private Endpoints
 
 # -----------------------------------------------------------------------------
 # AKS Cluster Configuration
 # -----------------------------------------------------------------------------
 kubernetes_version        = "1.28.5"
-sku_tier                  = "Free"        # Standard for SLA, Free for dev
-private_cluster_enabled   = false             # Set true for production
-automatic_channel_upgrade = "patch"           # none, patch, rapid, stable, node-image
+sku_tier                  = "Free"  # Standard for SLA, Free for dev
+private_cluster_enabled   = false   # Set true for production
+automatic_channel_upgrade = "patch" # none, patch, rapid, stable, node-image
 azure_policy_enabled      = true
-local_account_disabled    = false             # Set true when using Azure AD
+local_account_disabled    = false # Set true when using Azure AD
 
 # Network Configuration
-network_plugin = "azure"                      # azure (CNI) or kubenet
-network_policy = "azure"                      # azure, calico, or null
+network_plugin = "azure" # azure (CNI) or kubenet
+network_policy = "azure" # azure, calico, or null
 service_cidr   = "10.1.0.0/16"
 dns_service_ip = "10.1.0.10"
 
@@ -48,7 +48,7 @@ dns_service_ip = "10.1.0.10"
 # System Node Pool Configuration
 # -----------------------------------------------------------------------------
 system_node_pool_name               = "system"
-system_node_pool_vm_size            = "Standard_D4s_v3"     # 4 vCPU, 16 GB RAM
+system_node_pool_vm_size            = "Standard_D4s_v3" # 4 vCPU, 16 GB RAM
 system_node_pool_node_count         = 2
 system_node_pool_min_count          = 2
 system_node_pool_max_count          = 5
@@ -60,7 +60,7 @@ system_node_pool_availability_zones = ["1", "2", "3"]
 # User Node Pool Configuration
 # -----------------------------------------------------------------------------
 user_node_pool_name               = "userpool"
-user_node_pool_vm_size            = "Standard_D4s_v3"       # 4 vCPU, 16 GB RAM
+user_node_pool_vm_size            = "Standard_D4s_v3" # 4 vCPU, 16 GB RAM
 user_node_pool_node_count         = 2
 user_node_pool_min_count          = 1
 user_node_pool_max_count          = 10
