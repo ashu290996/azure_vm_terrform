@@ -40,7 +40,7 @@ variables:
   - name: tfStateKey
     value: 'aks-cluster-${{ parameters.environment }}.tfstate'
   - name: azureSubscription
-    value: '12d08a43-87ab-49fc-b06f-d1d31622044a'
+    value: 'azuredevopssp'
 
 stages:
   # =============================================================================
@@ -163,7 +163,7 @@ stages:
               backendAzureRmKey: '$(tfStateKey)'
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
-              environmentServiceNameAzureRM: 'azuredevopssp'
+              environmentServiceNameAzureRM: '$(azureSubscription)'
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'

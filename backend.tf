@@ -6,7 +6,3 @@ terraform {
     key                  = "aks-cluster.tfstate"
   }
 }
-
-provider "azurerm" {
-  features {}
-}
