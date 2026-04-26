@@ -1,8 +1,8 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "rg-terraform-state"
-    storage_account_name = "stterraformstate"
+    resource_group_name  = "azure-terraform-rg"
+    storage_account_name = "remotebackened"
     container_name       = "tfstate"
-    key                  = "aks-cluster.tfstate"
+    key                  = "aks-cluster-dev.tfstate"
   }
 }
