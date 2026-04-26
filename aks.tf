@@ -25,6 +25,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
   # Azure Policy
   azure_policy_enabled = var.azure_policy_enabled
 
+  # OIDC issuer cannot be disabled after it has been enabled on an AKS cluster.
+  oidc_issuer_enabled = true
+
   # Disable Local Accounts (require Azure AD)
   local_account_disabled = var.local_account_disabled
 
@@ -61,7 +64,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type                         = "VirtualMachineScaleSets"
     vnet_subnet_id               = azurerm_subnet.aks.id
     zones                        = var.system_node_pool_availability_zones
-    only_critical_addons_enabled = true  # System node pool - only critical addons
+    only_critical_addons_enabled = true # System node pool - only critical addons
 
     # Node Labels
     node_labels = {
@@ -81,12 +84,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   # Network Configuration
   # -----------------------------------------------------------------------------
   network_profile {
-    network_plugin     = var.network_plugin
-    network_policy     = var.network_policy
-    load_balancer_sku  = "standard"
-    outbound_type      = "loadBalancer"
-    service_cidr       = var.service_cidr
-    dns_service_ip     = var.dns_service_ip
+    network_plugin    = var.network_plugin
+    network_policy    = var.network_policy
+    load_balancer_sku = "standard"
+    outbound_type     = "loadBalancer"
+    service_cidr      = var.service_cidr
+    dns_service_ip    = var.dns_service_ip
 
     load_balancer_profile {
       managed_outbound_ip_count = 2
@@ -162,6 +165,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   depends_on = [
     azurerm_role_assignment.aks_network_contributor,
     azurerm_role_assignment.aks_subnet_contributor,
+    azurerm_role_assignment.aks_route_table_contributor,
     azurerm_role_assignment.aks_identity_operator
   ]
 
