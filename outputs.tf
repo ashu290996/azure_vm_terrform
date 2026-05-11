@@ -135,21 +135,21 @@ output "aks_kubelet_identity_client_id" {
 # -----------------------------------------------------------------------------
 # Log Analytics Outputs
 # -----------------------------------------------------------------------------
-output "log_analytics_workspace_id" {
-  description = "ID of the Log Analytics workspace"
-  value       = azurerm_log_analytics_workspace.aks.id
-}
+# output "log_analytics_workspace_id" {
+#   description = "ID of the Log Analytics workspace"
+#   value       = azurerm_log_analytics_workspace.aks.id
+# }
 
-output "log_analytics_workspace_name" {
-  description = "Name of the Log Analytics workspace"
-  value       = azurerm_log_analytics_workspace.aks.name
-}
+# output "log_analytics_workspace_name" {
+#   description = "Name of the Log Analytics workspace"
+#   value       = azurerm_log_analytics_workspace.aks.name
+# }
 
-output "log_analytics_workspace_primary_key" {
-  description = "Primary shared key for the Log Analytics workspace"
-  value       = azurerm_log_analytics_workspace.aks.primary_shared_key
-  sensitive   = true
-}
+# output "log_analytics_workspace_primary_key" {
+#   description = "Primary shared key for the Log Analytics workspace"
+#   value       = azurerm_log_analytics_workspace.aks.primary_shared_key
+#   sensitive   = true
+# }
 
 # -----------------------------------------------------------------------------
 # Node Pool Outputs

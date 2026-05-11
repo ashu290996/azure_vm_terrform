@@ -203,6 +203,12 @@ variable "user_node_pool_name" {
   default     = "userpool"
 }
 
+variable "user_node_pool_name1" {
+  description = "Name for the user node pool"
+  type        = string
+  default     = "userpool1"
+}
+
 variable "user_node_pool_vm_size" {
   description = "VM size for user node pool"
   type        = string

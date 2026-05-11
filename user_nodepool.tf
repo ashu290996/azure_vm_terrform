@@ -1,4 +1,4 @@
-resource "azurerm_kubernetes_cluster_node_pool" "user" {
+resource "azurerm_kubernetes_cluster_node_pool" "user1" {
   name                  = var.user_node_pool_name1
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.user_node_pool_vm_size

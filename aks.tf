@@ -111,10 +111,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
   # -----------------------------------------------------------------------------
   # OMS Agent (Container Insights)
   # -----------------------------------------------------------------------------
-  oms_agent {
-    log_analytics_workspace_id      = azurerm_log_analytics_workspace.aks.id
-    msi_auth_for_monitoring_enabled = true
-  }
+  # oms_agent {
+  #   log_analytics_workspace_id      = azurerm_log_analytics_workspace.aks.id
+  #   msi_auth_for_monitoring_enabled = false
+  # }
 
   # -----------------------------------------------------------------------------
   # Key Vault Secrets Provider
