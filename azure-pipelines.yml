@@ -164,6 +164,20 @@ stages:
               workingDirectory: '$(workingDirectory)'
               commandOptions: '-var-file="${{ parameters.environment }}.tfvars" -out=tfplan'
               environmentServiceNameAzureRM: '$(azureSubscription)'
+          
+          - task: TerraformTask@5
+            displayName: 'Terraform Plan refresh'
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              backendServiceArm: '$(azureSubscription)'
+              backendAzureRmResourceGroupName: '$(tfStateResourceGroup)'
+              backendAzureRmStorageAccountName: '$(tfStateStorageAccount)'
+              backendAzureRmContainerName: '$(tfStateContainer)'
+              backendAzureRmKey: '$(tfStateKey)'
+              workingDirectory: '$(workingDirectory)'
+              commandOptions: '--refresh-only'
+              environmentServiceNameAzureRM: '$(azureSubscription)'
 
           - task: PublishPipelineArtifact@1
             displayName: 'Publish Plan Artifact'

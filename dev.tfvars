@@ -48,7 +48,7 @@ dns_service_ip = "10.1.0.10"
 # System Node Pool Configuration
 # -----------------------------------------------------------------------------
 system_node_pool_name               = "system"
-system_node_pool_vm_size            = "Standard_D4s_v3" # 4 vCPU, 16 GB RAM
+system_node_pool_vm_size            = "Standard_F2s_v2" # 4 vCPU, 16 GB RAM
 system_node_pool_node_count         = 1
 system_node_pool_min_count          = 1
 system_node_pool_max_count          = 3
@@ -60,7 +60,7 @@ system_node_pool_availability_zones = ["1", "2", "3"]
 # User Node Pool Configuration
 # -----------------------------------------------------------------------------
 user_node_pool_name               = "userpool"
-user_node_pool_vm_size            = "Standard_D4s_v3" # 4 vCPU, 16 GB RAM
+user_node_pool_vm_size            = "Standard_F2s_v2" # 4 vCPU, 16 GB RAM
 user_node_pool_node_count         = 1
 user_node_pool_min_count          = 1
 user_node_pool_max_count          = 10
