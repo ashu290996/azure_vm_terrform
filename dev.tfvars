@@ -31,7 +31,7 @@ private_endpoint_subnet_address_prefix = "10.0.17.0/24" # 256 IPs for Private En
 # -----------------------------------------------------------------------------
 # AKS Cluster Configuration
 # -----------------------------------------------------------------------------
-kubernetes_version        = "1.34.4"
+kubernetes_version        = "1.35.1"
 sku_tier                  = "Free"  # Standard for SLA, Free for dev
 private_cluster_enabled   = false   # Set true for production
 automatic_channel_upgrade = "patch" # none, patch, rapid, stable, node-image
