@@ -65,6 +65,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     vnet_subnet_id               = azurerm_subnet.aks.id
     zones                        = var.system_node_pool_availability_zones
     only_critical_addons_enabled = true # System node pool - only critical addons
+    orchestrator_version           = var.kubernetes_version
 
     # Node Labels
     node_labels = {

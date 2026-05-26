@@ -16,6 +16,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "user1" {
   mode                  = "User"
   vnet_subnet_id        = azurerm_subnet.aks.id
   zones                 = var.user_node_pool_availability_zones
+  orchestrator_version    = var.kubernetes_version
 
   # Node Labels
   node_labels = merge(
